@@ -1,24 +1,17 @@
-module.exports = (sequelize, DataTypes) => {
-    const Convocatoria = sequelize.define('Convocatoria', {
-      idConvocatoria: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      nombre: DataTypes.STRING,
-      tipo: DataTypes.STRING,
-      descripcion: DataTypes.STRING,
-      requisitos: DataTypes.STRING,
-      promedioMinimo: DataTypes.FLOAT,
-      nivelIdioma: DataTypes.STRING,
-      beneficios: DataTypes.STRING,
-      fechaInicio: DataTypes.DATE,
-      fechaFin: DataTypes.DATE,
-      estado: DataTypes.ENUM('Activa', 'EnProceso', 'Finalizada')
-    }, {});
-    Convocatoria.associate = function(models) {
-      Convocatoria.belongsTo(models.Coordinador, { foreignKey: 'idUsuario' });
-    };
-    return Convocatoria;
-  };
-  
+const mongoose = require('mongoose');
+
+const ConvocatoriaSchema = new mongoose.Schema({
+  nombre: { type: String, required: true },
+  tipo: { type: String, required: true },
+  descripcion: { type: String },
+  requisitos: { type: String },
+  promedioMinimo: { type: Number },
+  nivelIdioma: { type: String },
+  beneficios: { type: String },
+  fechaInicio: { type: Date },
+  fechaFin: { type: Date },
+  estado: { type: String, enum: ['Activa', 'EnProceso', 'Finalizada'], required: true },
+  creador: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona' }
+});
+
+module.exports = mongoose.model('Convocatoria', ConvocatoriaSchema);

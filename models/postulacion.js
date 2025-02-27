@@ -1,18 +1,9 @@
-module.exports = (sequelize, DataTypes) => {
-    const Postulacion = sequelize.define('Postulacion', {
-      idPostulacion: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      idUsuario: DataTypes.INTEGER,
-      idConvocatoria: DataTypes.INTEGER,
-      estado: DataTypes.ENUM('enProgreso', 'completada', 'rechazada')
-    }, {});
-    Postulacion.associate = function(models) {
-      Postulacion.belongsTo(models.Persona, { foreignKey: 'idUsuario' });
-      Postulacion.belongsTo(models.Convocatoria, { foreignKey: 'idConvocatoria' });
-    };
-    return Postulacion;
-  };
-  
+const mongoose = require('mongoose');
+
+const PostulacionSchema = new mongoose.Schema({
+  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona', required: true },
+  convocatoria: { type: mongoose.Schema.Types.ObjectId, ref: 'Convocatoria', required: true },
+  estado: { type: String, enum: ['enProgreso', 'completada', 'rechazada'], required: true }
+});
+
+module.exports = mongoose.model('Postulacion', PostulacionSchema);
