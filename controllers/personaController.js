@@ -1,4 +1,4 @@
-const Persona = require('../models/Persona'); // Importa el modelo de Mongoose
+const Persona = require('../models/Persona');
 
 // Obtener todas las personas
 const getPersonas = async (req, res) => {
