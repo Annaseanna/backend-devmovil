@@ -16,9 +16,7 @@ const ConvocatoriaSchema = new mongoose.Schema({
     enum: ['Activa', 'RevisionSolicitudes', 'Finalizada'], 
     default: 'Activa' 
   },
-  creador: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona', required: true } // Relación con Persona
+  creador: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona', required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Convocatoria', ConvocatoriaSchema);
-
-//

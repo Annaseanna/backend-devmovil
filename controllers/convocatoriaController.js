@@ -73,17 +73,3 @@ exports.eliminarConvocatoria = async (req, res) => {
   }
 };
 
-// Obtener candidatos postulados a una convocatoria
-exports.obtenerCandidatos = async (req, res) => {
-  try {
-    const convocatoria = await Convocatoria.findById(req.params.id);
-    if (!convocatoria) {
-      return res.status(404).json({ msg: 'Convocatoria no encontrada' });
-    }
-
-    const candidatos = await Persona.find({ tipoUsuario: 'student', 'postulaciones.convocatoria': req.params.id });
-    res.status(200).json(candidatos);
-  } catch (error) {
-    res.status(500).json({ msg: 'Error al obtener los candidatos', error });
-  }
-};
