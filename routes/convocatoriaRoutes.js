@@ -4,8 +4,8 @@ const convocatoriaController = require('../controllers/convocatoriaController');
 
 // Rutas para convocatorias
 router.post('/', convocatoriaController.crearConvocatoria);
-router.put('/:nombre', convocatoriaController.actualizarConvocatoria);
-router.delete('/:nombre', convocatoriaController.eliminarConvocatoria);
+router.put('/:idConvocatoria', convocatoriaController.actualizarConvocatoria);
+router.delete('/:idConvocatoria', convocatoriaController.eliminarConvocatoria);
 router.get('/', convocatoriaController.obtenerConvocatorias);
 
 module.exports = router;

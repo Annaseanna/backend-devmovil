@@ -1,11 +1,13 @@
+const mongoose = require('mongoose');
 const Convocatoria = require('../models/Convocatoria');
 
 // Crear nueva convocatoria
 exports.crearConvocatoria = async (req, res) => {
   try {
-    const {nombre, tipo, descripcion, requisitos, promedioMinimo, nivelIdioma, beneficios, fechaInicio, fechaFin, estado} = req.body;
+    const {idConvocatoria, nombre, tipo, descripcion, requisitos, promedioMinimo, nivelIdioma, beneficios, fechaInicio, fechaFin, estado} = req.body;
     
     const nuevaConvocatoria = new Convocatoria({
+      idConvocatoria,
       nombre,
       tipo,
       descripcion,
@@ -35,22 +37,38 @@ exports.obtenerConvocatorias = async (req, res) => {
   }
 };
 
-// Actualizar convocatoria por nombre
+
 exports.actualizarConvocatoria = async (req, res) => {
   try {
-    const convocatoriaActualizada = await Convocatoria.findOneAndUpdate({ nombre: req.params.nombre }, req.body, { new: true });
+    const convocatoriaActualizada = await Convocatoria.findOneAndUpdate(
+      { idConvocatoria: req.params.idConvocatoria },  
+      req.body, 
+      { new: true } 
+    );
+
+    if (!convocatoriaActualizada) {
+      return res.status(404).json({ msg: 'Convocatoria no encontrada' });
+    }
+
     res.status(200).json(convocatoriaActualizada);
   } catch (error) {
     res.status(500).json({ msg: 'Error al actualizar la convocatoria', error });
   }
 };
 
-// Eliminar convocatoria por nombre
 exports.eliminarConvocatoria = async (req, res) => {
   try {
-    await Convocatoria.findOneAndDelete({ nombre: req.params.nombre });
+    const convocatoriaEliminada = await Convocatoria.findOneAndDelete(
+      { idConvocatoria: req.params.idConvocatoria }  
+    );
+
+    if (!convocatoriaEliminada) {
+      return res.status(404).json({ msg: 'Convocatoria no encontrada' });
+    }
+
     res.status(200).json({ msg: 'Convocatoria eliminada' });
   } catch (error) {
-    res.status(500).json({ msg: 'Error al eliminar la convocatoria', error });
+    console.error(error);
+    res.status(500).json({ msg: 'Error al eliminar la convocatoria', error: error.message });
   }
 };

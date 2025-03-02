@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const ConvocatoriaSchema = new mongoose.Schema({
+  idConvocatoria: { type: String, required: true, unique: true },
   nombre: { type: String, required: true },
   tipo: { type: String, required: true },
   descripcion: { type: String, required: true },
