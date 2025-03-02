@@ -2,12 +2,10 @@ const express = require('express');
 const router = express.Router();
 const convocatoriaController = require('../controllers/convocatoriaController');
 
-// Rutas protegidas para administradores
+// Rutas para convocatorias
 router.post('/', convocatoriaController.crearConvocatoria);
-router.put('/:id', convocatoriaController.actualizarConvocatoria);
-router.delete('/:id', convocatoriaController.eliminarConvocatoria);
-
-// Rutas públicas
+router.put('/:nombre', convocatoriaController.actualizarConvocatoria);
+router.delete('/:nombre', convocatoriaController.eliminarConvocatoria);
 router.get('/', convocatoriaController.obtenerConvocatorias);
 
 module.exports = router;

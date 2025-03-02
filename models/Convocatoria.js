@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const ConvocatoriaSchema = new mongoose.Schema({
-  idConvocatoria: { type: String, required: true, unique: true },
   nombre: { type: String, required: true },
   tipo: { type: String, required: true },
   descripcion: { type: String, required: true },
@@ -16,7 +15,6 @@ const ConvocatoriaSchema = new mongoose.Schema({
     enum: ['Activa', 'RevisionSolicitudes', 'Finalizada'], 
     default: 'Activa' 
   },
-  creador: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona', required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Convocatoria', ConvocatoriaSchema);
