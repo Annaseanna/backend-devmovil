@@ -115,27 +115,35 @@ exports.obtenerPostulacionesPorCorreo = async (req, res) => {
   }
 };
 
-
 exports.obtenerPostulacionesPorConvocatoria = async (req, res) => {
   try {
     const { idConvocatoria } = req.params;
 
-    const postulaciones = await Postulacion.find({ idConvocatoria }).select('correoElectronico promedio');
+   
+    const postulaciones = await Postulacion.find({ idConvocatoria })
+      .select('correoElectronico promedio carrera porcentajeAvance');
 
     if (!postulaciones.length) {
       return res.status(404).json({ msg: 'No hay postulaciones para esta convocatoria' });
     }
 
+
     const correos = postulaciones.map(p => p.correoElectronico);
+
+
     const usuarios = await Usuario.find({ correo: { $in: correos } }).select('nombre correo');
 
+    
     const usuariosDict = {};
     usuarios.forEach(user => {
       usuariosDict[user.correo] = user.nombre;
     });
 
+
     const resultado = postulaciones.map(postulacion => ({
       nombre: usuariosDict[postulacion.correoElectronico] || 'No disponible',
+      programa: postulacion.carrera, 
+      avance: postulacion.porcentajeAvance,  
       correo: postulacion.correoElectronico,
       promedio: postulacion.promedio
     }));
