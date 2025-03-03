@@ -1,4 +1,5 @@
 const Postulacion = require('../models/Postulacion');
+const Usuario = require('../models/Persona');
 
 // Crear postulación
 exports.crearPostulacion = async (req, res) => {
@@ -106,6 +107,36 @@ exports.obtenerPostulacionesPorCorreo = async (req, res) => {
       descripcion: postulacion.idConvocatoria?.descripcion || 'No disponible',
       pais: postulacion.idConvocatoria?.pais || 'No disponible',
       estado: postulacion.estado
+    }));
+
+    res.status(200).json(resultado);
+  } catch (error) {
+    res.status(500).json({ msg: 'Error al obtener las postulaciones', error: error.message });
+  }
+};
+
+
+exports.obtenerPostulacionesPorConvocatoria = async (req, res) => {
+  try {
+    const { idConvocatoria } = req.params;
+
+    // Buscar postulaciones asociadas a la convocatoria
+    const postulaciones = await Postulacion.find({ idConvocatoria })
+      .populate({
+        path: 'correoElectronico', // Obtener los datos del usuario
+        select: 'nombre' // Traer solo el nombre y el correo
+      })
+      .select('promedio'); // Seleccionar solo el promedio de la postulación
+
+    if (!postulaciones.length) {
+      return res.status(404).json({ msg: 'No hay postulaciones para esta convocatoria' });
+    }
+
+    // Formatear la respuesta con los datos requeridos
+    const resultado = postulaciones.map(postulacion => ({
+      nombre: postulacion.correoElectronico?.nombre || 'No disponible',
+      correo: postulacion.correoElectronico,
+      promedio: postulacion.promedio
     }));
 
     res.status(200).json(resultado);
