@@ -92,10 +92,10 @@ exports.obtenerPostulacionesPorCorreo = async (req, res) => {
     // Buscar postulaciones del usuario basado en su correo
     const postulaciones = await Postulacion.find({ correoElectronico })
       .populate({
-        path: 'idConvocatoria', // Referencia a la convocatoria asociada
-        select: 'nombre descripcion pais' // Solo traer estos campos de la convocatoria
+        path: 'idConvocatoria', 
+        select: 'nombre descripcion pais' 
       })
-      .select('estado'); // Seleccionar solo el estado de la postulación
+      .select('estado'); 
 
     if (!postulaciones.length) {
       return res.status(404).json({ msg: 'No se encontraron postulaciones para este correo' });
@@ -120,21 +120,22 @@ exports.obtenerPostulacionesPorConvocatoria = async (req, res) => {
   try {
     const { idConvocatoria } = req.params;
 
-    // Buscar postulaciones asociadas a la convocatoria
-    const postulaciones = await Postulacion.find({ idConvocatoria })
-      .populate({
-        path: 'correoElectronico', // Obtener los datos del usuario
-        select: 'nombre' // Traer solo el nombre y el correo
-      })
-      .select('promedio'); // Seleccionar solo el promedio de la postulación
+    const postulaciones = await Postulacion.find({ idConvocatoria }).select('correoElectronico promedio');
 
     if (!postulaciones.length) {
       return res.status(404).json({ msg: 'No hay postulaciones para esta convocatoria' });
     }
 
-    // Formatear la respuesta con los datos requeridos
+    const correos = postulaciones.map(p => p.correoElectronico);
+    const usuarios = await Usuario.find({ correo: { $in: correos } }).select('nombre correo');
+
+    const usuariosDict = {};
+    usuarios.forEach(user => {
+      usuariosDict[user.correo] = user.nombre;
+    });
+
     const resultado = postulaciones.map(postulacion => ({
-      nombre: postulacion.correoElectronico?.nombre || 'No disponible',
+      nombre: usuariosDict[postulacion.correoElectronico] || 'No disponible',
       correo: postulacion.correoElectronico,
       promedio: postulacion.promedio
     }));
